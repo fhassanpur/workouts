@@ -10,9 +10,10 @@ import SwiftData
 
 @main
 struct WorkoutsApp: App {
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            WorkoutLog.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,7 +27,6 @@ struct WorkoutsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-        }
-        .modelContainer(sharedModelContainer)
+        }.modelContainer(sharedModelContainer)
     }
 }
