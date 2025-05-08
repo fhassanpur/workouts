@@ -12,9 +12,11 @@ import SwiftData
 class WorkoutExercise {
     var name: String
     var type: WorkoutType
+    var defaultExercise: Bool
     
-    init(name: String, type: WorkoutType) {
+    init(name: String, type: WorkoutType, defaultExercise: Bool = false) {
         self.name = name
         self.type = type
+        self.defaultExercise = defaultExercise
     }
 }

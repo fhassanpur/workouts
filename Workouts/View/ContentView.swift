@@ -10,18 +10,23 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var workoutLogs: [WorkoutLog]
 
     var body: some View {
         TabView {
-            Tab("Logs", systemImage: "dumbbell.fill") {
-                WorkoutLogListView().modelContext(modelContext)
+            Tab("Home", systemImage: "dumbbell.fill") {
+                HomeTabView()
             }
             Tab("Workout Plans", systemImage: "checklist") {
-                WorkoutPlanListView()
+                WorkoutPlansTabView().modelContext(modelContext)
             }
             Tab("Progress", systemImage: "chart.line.uptrend.xyaxis") {
-                EmptyView()
+                ProgressTabView().modelContext(modelContext)
+            }
+        }.onAppear {
+            let descriptor = FetchDescriptor<WorkoutExercise>()
+            let count = try! modelContext.fetchCount(descriptor)
+            if count == 0 {
+                DataMigration.migrateJsonData(modelContext)
             }
         }
     }
