@@ -12,28 +12,23 @@ struct WorkoutPlansTabView: View {
     @Environment(\.modelContext) var modelContext
     @Query private var workoutPlans: [WorkoutPlan]
     
-    @State private var showAddPlanModal: Bool = false
-    
     var body: some View {
         NavigationStack {
             List {
                 ForEach(workoutPlans) { plan in
                     Text(plan.name)
                 }
-            }.sheet(isPresented: $showAddPlanModal) {
-                CreateWorkoutPlanView()
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.visible)
             }.toolbar {
                 ToolbarItem {
-                    let exerciseListView = ExerciseListView().modelContext(modelContext)
+                    let exerciseListView = ExerciseListView(isSelectMode: false).modelContext(modelContext)
                     NavigationLink(destination: exerciseListView) {
                         Text("Exercises")
                     }
                 }
                 ToolbarItem {
-                    Button(action: presentAddPlanModal) {
-                        Label("Add Workout Plan", systemImage: "plus")
+                    let createView = CreateWorkoutPlanView().modelContext(modelContext)
+                    NavigationLink(destination: createView) {
+                        Text("Add")
                     }
                 }
             }.overlay {
@@ -46,10 +41,6 @@ struct WorkoutPlansTabView: View {
                 }
             }.navigationTitle("Plans")
         }
-    }
-    
-    private func presentAddPlanModal() {
-        showAddPlanModal = true
     }
 }
 

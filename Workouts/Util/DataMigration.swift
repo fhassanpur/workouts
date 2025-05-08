@@ -21,6 +21,11 @@ class DataMigration {
             let newExercise = WorkoutExercise(name: exercise.name, type: type, defaultExercise: true)
             modelContext.insert(newExercise)
         }
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save the context: \(error)")
+        }
         
         print("First time migration completed!")
     }
