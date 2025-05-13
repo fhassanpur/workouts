@@ -29,8 +29,8 @@ struct MuscleDiagramView: View {
         "hamstrings": ("hamstrings", 6),
         "lats": ("lats", 2),
         "traps": ("traps", 4),
-        "lower back": ("lats", 2),
-        "middle back": ("rhomboids", 2),
+        "lower back": ("lower_back", 2),
+        "middle back": ("lats", 2),
         "glutes": ("glutes", 2),
     ]
     

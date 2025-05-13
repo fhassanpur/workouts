@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 class WorkoutExercise {
+    var id: UUID = UUID()
     var name: String
     var type: WorkoutType
     var defaultExercise: Bool

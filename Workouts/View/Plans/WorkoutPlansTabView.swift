@@ -29,6 +29,7 @@ struct WorkoutPlansTabView: View {
                 }
                 ToolbarItem {
                     let createView = CreateWorkoutPlanView().modelContext(modelContext)
+                        .navigationTitle("Create Workout Plan")
                     NavigationLink(destination: createView) {
                         Text("Add")
                     }

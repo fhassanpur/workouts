@@ -12,10 +12,21 @@ struct WorkoutPlanDetailView: View {
     
     var body: some View {
         VStack {
-            List(plan.exercises, id:\.self) { exercise in
-                let sets = plan.setCount[exercise.id.hashValue] ?? 0
+            let exercises = plan.exercises.sorted { (lhs, rhs) in
+                let lhsIndex = plan.ordering.firstIndex(of: lhs.id)
+                let rhsIndex = plan.ordering.firstIndex(of: rhs.id)
+                return lhsIndex ?? 0 < rhsIndex ?? 0
+                
+            }
+            List(exercises, id:\.self) { exercise in
+                let sets = plan.setCount[exercise.id] ?? 0
                 NavigationLink(destination: ExerciseDetailView(exercise: exercise).navigationTitle(exercise.name)) {
-                    Text("\(sets) sets of \(exercise.name)")
+                    HStack {
+                        Text(exercise.name)
+                        Spacer()
+                        Image(systemName: "repeat")
+                        Text("\(sets)").monospaced()
+                    }
                 }
             }
             Button("Start Workout") {
@@ -30,6 +41,6 @@ struct WorkoutPlanDetailView: View {
 
 #Preview {
     let exercise = WorkoutExercise(name: "Barbell Bench Press", type: .strength)
-    let plan = WorkoutPlan(name: "Test Plan", exercises: [exercise], setCounts: [exercise.id.hashValue:4])
+    let plan = WorkoutPlan(name: "Test Plan", exercises: [exercise], setCounts: [exercise.id:4])
     WorkoutPlanDetailView(plan: plan)
 }
