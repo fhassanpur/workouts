@@ -16,7 +16,9 @@ struct WorkoutPlansTabView: View {
         NavigationStack {
             List {
                 ForEach(workoutPlans) { plan in
-                    Text(plan.name)
+                    NavigationLink(destination: WorkoutPlanDetailView(plan: plan).navigationTitle(plan.name)) {
+                        Text(plan.name)
+                    }
                 }
             }.toolbar {
                 ToolbarItem {

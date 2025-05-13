@@ -14,7 +14,7 @@ struct CreateWorkoutPlanView: View {
     @State private var name: String = ""
     @State private var exercises: [WorkoutExercise] = []
     
-    @State private var showExercisesList = false
+    @State private var setCounts: [Int: Int] = [:]
     
     var body: some View {
         VStack {
@@ -26,12 +26,17 @@ struct CreateWorkoutPlanView: View {
                 List {
                     Section {
                         ForEach($exercises, id:\.self, editActions: .all) { $exercise in
-                            Text(exercise.name)
+                            WorkoutExerciseRow(exercise: exercise, allSetCounts: $setCounts)
                         }
                     }
                     Section {
                         let exercistListView = ExerciseListView(isSelectMode: true) { selectedExercises in
                             exercises.append(contentsOf: selectedExercises)
+                            exercises.forEach { exercise in
+                                if setCounts[exercise.id.hashValue] == nil {
+                                    setCounts[exercise.id.hashValue] = 1
+                                }
+                            }
                         }.navigationTitle("Exercises")
                         NavigationLink(destination: exercistListView) {
                             Text("Add Exercises")
@@ -42,7 +47,7 @@ struct CreateWorkoutPlanView: View {
         }.toolbar {
             ToolbarItem {
                 Button("Save") {
-                    let plan = WorkoutPlan(name: name, exercises: exercises)
+                    let plan = WorkoutPlan(name: name, exercises: exercises, setCounts: setCounts)
                     modelContext.insert(plan)
                     do {
                         try modelContext.save()
@@ -53,6 +58,39 @@ struct CreateWorkoutPlanView: View {
                 }.disabled(name.isEmpty || exercises.isEmpty)
             }
         }.navigationTitle("Create Workout Plan")
+    }
+}
+
+struct WorkoutExerciseRow: View {
+    @State var exercise: WorkoutExercise
+    @State var setCount: Int
+    
+    @Binding var allSetCounts: [Int: Int]
+    
+    init(exercise: WorkoutExercise, allSetCounts: Binding<[Int : Int]>) {
+        self.exercise = exercise
+        self._allSetCounts = allSetCounts
+        
+        self.setCount = allSetCounts.wrappedValue[exercise.id.hashValue] ?? 1
+    }
+    
+    var body: some View {
+        HStack {
+            Text("\(exercise.name)")
+            Stepper("\(setCount) Sets") {
+                setCount += 1
+                if setCount > 99 {
+                    setCount = 99
+                }
+            } onDecrement: {
+                setCount -= 1
+                if setCount < 1 {
+                    setCount = 1
+                }
+            }
+        }.onChange(of: setCount) { _, newValue in
+            allSetCounts[exercise.id.hashValue] = newValue
+        }
     }
 }
 

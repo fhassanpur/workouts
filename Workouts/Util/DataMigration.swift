@@ -18,7 +18,17 @@ class DataMigration {
             if exercise.category == "strength" {
                 type = .strength
             }
-            let newExercise = WorkoutExercise(name: exercise.name, type: type, defaultExercise: true)
+            let newExercise = WorkoutExercise(
+                name: exercise.name,
+                type: type,
+                defaultExercise: true,
+                primaryMuscles: exercise.primaryMuscles,
+                secondaryMuscles: exercise.secondaryMuscles,
+                level: exercise.level,
+                mechanic: exercise.mechanic,
+                force: exercise.force,
+                instructions: exercise.instructions
+            )
             modelContext.insert(newExercise)
         }
         do {

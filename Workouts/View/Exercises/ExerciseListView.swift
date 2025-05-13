@@ -22,9 +22,9 @@ struct ExerciseListView: View {
     
     var body: some View {
         NavigationStack {
-            let exerciseList = ExerciseList(searchQuery: searchFilter, isSelectMode: isSelectMode, doneAction: doneAction)
-            
-            exerciseList.toolbar {
+            ExerciseList(searchQuery: $searchFilter, isSelectMode: isSelectMode, doneAction: doneAction)
+            .modelContext(modelContext)
+            .toolbar {
                 if !isSelectMode {
                     ToolbarItem {
                         Button(action: presentAddExerciseModal) {
@@ -44,52 +44,63 @@ struct ExerciseListView: View {
 }
 
 struct ExerciseList: View {
+    @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     @Environment(\.editMode) var editMode
     
-    @Query private var userExercises: [WorkoutExercise]
-    @Query private var defaultExercises: [WorkoutExercise]
+    @Query(sort: \WorkoutExercise.name) private var allExercises: [WorkoutExercise]
     
     @State private var isSelectMode: Bool
     @State private var selectedExercises: Set<WorkoutExercise> = []
     
+    @Binding private var searchQuery: String
     private let doneAction: ((Array<WorkoutExercise>) -> Void)?
     
-    init(searchQuery: String,
-         isSelectMode: Bool,
-         doneAction: ((Array<WorkoutExercise>) -> Void)? = nil
+    init(
+        searchQuery: Binding<String>,
+        isSelectMode: Bool,
+        doneAction: ((Array<WorkoutExercise>) -> Void)? = nil
     ) {
-        self._userExercises = Query(filter: #Predicate<WorkoutExercise> {
-            if searchQuery.isEmpty {
-                return !$0.defaultExercise
-            } else {
-                return !$0.defaultExercise && $0.name.localizedStandardContains(searchQuery)
-            }
-        }, sort: \.name)
-        self._defaultExercises = Query(filter: #Predicate<WorkoutExercise> {
-            if searchQuery.isEmpty {
-                return $0.defaultExercise
-            } else {
-                return $0.defaultExercise && $0.name.localizedStandardContains(searchQuery)
-            }
-        }, sort: \.name)
+        self._searchQuery = searchQuery
         self.isSelectMode = isSelectMode
         self.doneAction = doneAction
     }
     
+    private func fetchExercises(defaultsOnly: Bool) -> [WorkoutExercise] {
+        let predicate = #Predicate<WorkoutExercise> { exercise in
+            exercise.defaultExercise == defaultsOnly &&
+            (searchQuery.isEmpty || exercise.name.localizedStandardContains(searchQuery))
+        }
+
+        let descriptor = FetchDescriptor<WorkoutExercise>(predicate: predicate, sortBy: [SortDescriptor(\.name)])
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Fetch failed: \(error)")
+            return []
+        }
+    }
+    
     var body: some View {
+        let userExercises = fetchExercises(defaultsOnly: false)
+        let defaultExercises = fetchExercises(defaultsOnly: true)
+        
         List(selection: $selectedExercises) {
             if !userExercises.isEmpty {
                 Section("My Exercises") {
-                    ForEach(userExercises, id:\.self) { exercise in
-                        Text(exercise.name).tag(exercise.id)
+                    ForEach(userExercises, id: \.self) { exercise in
+                        NavigationLink(destination: ExerciseDetailView(exercise: exercise).navigationTitle(exercise.name)) {
+                            Text(exercise.name)
+                        }
                     }
                 }
             }
             if !defaultExercises.isEmpty {
                 Section("Default Exercises") {
-                    ForEach(defaultExercises, id:\.self) { exercise in
-                        Text(exercise.name).tag(exercise.id)
+                    ForEach(defaultExercises, id: \.self) { exercise in
+                        NavigationLink(destination: ExerciseDetailView(exercise: exercise).navigationTitle(exercise.name)) {
+                            Text(exercise.name)
+                        }
                     }
                 }
             }

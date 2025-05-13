@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		08F3F7AD2DCFFB6F00BB1C19 /* SVGView in Frameworks */ = {isa = PBXBuildFile; productRef = 08F3F7AC2DCFFB6F00BB1C19 /* SVGView */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		0879813C2DC87325002AC45A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F3F7AD2DCFFB6F00BB1C19 /* SVGView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				0879812E2DC87323002AC45A /* Workouts */,
 				0879813E2DC87325002AC45A /* WorkoutsTests */,
 				087981482DC87325002AC45A /* WorkoutsUITests */,
+				08F3F7AB2DCFFB6F00BB1C19 /* Frameworks */,
 				0879812D2DC87323002AC45A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				087981452DC87325002AC45A /* WorkoutsUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		08F3F7AB2DCFFB6F00BB1C19 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = Workouts;
 			packageProductDependencies = (
+				08F3F7AC2DCFFB6F00BB1C19 /* SVGView */,
 			);
 			productName = Workouts;
 			productReference = 0879812C2DC87323002AC45A /* Workouts.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = 087981232DC87323002AC45A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				08F3F7AA2DCFFB0600BB1C19 /* XCRemoteSwiftPackageReference "SVGView" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0879812D2DC87323002AC45A /* Products */;
 			projectDirPath = "";
@@ -558,6 +575,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		08F3F7AA2DCFFB0600BB1C19 /* XCRemoteSwiftPackageReference "SVGView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/SVGView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		08F3F7AC2DCFFB6F00BB1C19 /* SVGView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08F3F7AA2DCFFB0600BB1C19 /* XCRemoteSwiftPackageReference "SVGView" */;
+			productName = SVGView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 087981242DC87323002AC45A /* Project object */;
 }
